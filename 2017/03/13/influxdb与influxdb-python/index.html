@@ -12,18 +12,18 @@
   
   
   <meta name="description" content="InfluxdbInfluxDB用 Go 语言编写的一个开源分布式时序、事件和指标数据库，InfluxDB 提供类 SQL 语法，很容易上手，但是又和SQL有很大差别。
-Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-python。正好最近项目中用到了Influxdb，梳理一些从0开始的过程。 Influxdb 仅仅单机版本免费，集群使用并不">
+Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-python。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="influxdb与influxdb-python">
 <meta property="og:url" content="http://yoursite.com/2017/03/13/influxdb与influxdb-python/index.html">
 <meta property="og:site_name" content="Geoion">
 <meta property="og:description" content="InfluxdbInfluxDB用 Go 语言编写的一个开源分布式时序、事件和指标数据库，InfluxDB 提供类 SQL 语法，很容易上手，但是又和SQL有很大差别。
-Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-python。正好最近项目中用到了Influxdb，梳理一些从0开始的过程。 Influxdb 仅仅单机版本免费，集群使用并不">
-<meta property="og:updated_time" content="2017-03-13T16:15:00.000Z">
+Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-python。">
+<meta property="og:updated_time" content="2017-03-13T16:20:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="influxdb与influxdb-python">
 <meta name="twitter:description" content="InfluxdbInfluxDB用 Go 语言编写的一个开源分布式时序、事件和指标数据库，InfluxDB 提供类 SQL 语法，很容易上手，但是又和SQL有很大差别。
-Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-python。正好最近项目中用到了Influxdb，梳理一些从0开始的过程。 Influxdb 仅仅单机版本免费，集群使用并不">
+Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-python。">
   
     <link rel="alternate" href="/atom.xml" title="Geoion" type="application/atom+xml">
   
@@ -175,7 +175,7 @@ Infiuxdb同时也提供了 python client 方便开发，Github地址：influxdb-
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="Influxdb"><a href="#Influxdb" class="headerlink" title="Influxdb"></a>Influxdb</h1><p><a href="https://www.influxdata.com" target="_blank" rel="external">InfluxDB</a>用 Go 语言编写的一个开源分布式时序、事件和指标数据库，InfluxDB 提供类 SQL 语法，很容易上手，但是又和SQL有很大差别。</p>
-<p>Infiuxdb同时也提供了 python client 方便开发，Github地址：<a href="https://github.com/influxdata/influxdb-python" target="_blank" rel="external">influxdb-python</a>。<br>正好最近项目中用到了Influxdb，梳理一些从0开始的过程。 Influxdb 仅仅单机版本免费，集群使用并不免费，注意。</p>
+<p>Infiuxdb同时也提供了 python client 方便开发，Github地址：<a href="https://github.com/influxdata/influxdb-python" target="_blank" rel="external">influxdb-python</a>。<br><a id="more"></a><br>正好最近项目中用到了Influxdb，梳理一些从0开始的过程。 Influxdb 仅仅单机版本免费，集群使用并不免费，注意。</p>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>Mac 的开发环境下，可以使用 <a href="https://brew.sh/" target="_blank" rel="external">Homebrew</a> 来安装 Influxdb：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew update</div><div class="line">brew install influxdb</div></pre></td></tr></table></figure>
 <p>安装完之后可以用过 Homebrew 来来启动 Influxdb 的服务：</p>
