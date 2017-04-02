@@ -190,12 +190,116 @@
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="redis-架构"><a href="#redis-架构" class="headerlink" title="redis 架构"></a>redis 架构</h2><p><img src="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png" alt="架构"></p>
+        <p>根据同事分享的 Redis剖析 整理，算是对《Redis设计与实现》一书的理解和实际使用的总结。</p>
+<h2 id="redis-架构"><a href="#redis-架构" class="headerlink" title="redis 架构"></a>redis 架构</h2><p><img src="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png" alt="架构"></p>
 <h2 id="数据结构-Redis-Object"><a href="#数据结构-Redis-Object" class="headerlink" title="数据结构 Redis Object"></a>数据结构 Redis Object</h2><p>目前 Redis 的数据结构有 <code>String</code>, <code>List</code>, <code>Set</code>, <code>Sorted_Set</code>, <code>Hash</code> 五种。</p>
 <p><img src="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%202.png" alt="数据结构"></p>
 <p>所有的对象都可以用 redisObject 结构来表示，每个对象都有 <code>type</code>, <code>encoding</code>, <code>ptr</code> 这三个属性。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisObject &#123;</div><div class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;</div><div class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;</div><div class="line">    <span class="keyword">void</span> *ptr;</div><div class="line">&#125; robj;</div></pre></td></tr></table></figure>
-<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3>
+<p>不同的 <code>type</code> 对应不同的对象:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">type</th>
+<th style="text-align:center">Object</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">REDIS_STRING</td>
+<td style="text-align:center">String</td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_LIST</td>
+<td style="text-align:center">List</td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_HASH</td>
+<td style="text-align:center">Dict</td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_SET</td>
+<td style="text-align:center">Hash</td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_ZSET</td>
+<td style="text-align:center">Zset</td>
+</tr>
+</tbody>
+</table>
+<p>基于这些类型的对象，有不用的数据结构实现的编码:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">type</th>
+<th style="text-align:center">encoding</th>
+<th style="text-align:center">Object</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">REDIS_STRING</td>
+<td style="text-align:center">REDIS_ENCODING_INT</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_STRING</td>
+<td style="text-align:center">REDIS_ENCODING_EMBSTR</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_STRING</td>
+<td style="text-align:center">REDIS_ENCODING_RAW</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_LIST</td>
+<td style="text-align:center">REDIS_ENCODING_ZIPLIST</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_LIST</td>
+<td style="text-align:center">REDIS_ENCODING_LINKEDLIST</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_HASH</td>
+<td style="text-align:center">REDIS_ENCODING_ZIPLIST</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_HASH</td>
+<td style="text-align:center">REDIS_ENCODING_HT</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_SET</td>
+<td style="text-align:center">REDIS_ENCODING_INTSET</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_SET</td>
+<td style="text-align:center">REDIS_ENCODING_HT</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_ZSET</td>
+<td style="text-align:center">REDIS_ENCODING_ZIPLIST</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REDIS_ZSET</td>
+<td style="text-align:center">REDIS_ENCODING_SKIPLIST</td>
+</tr>
+</tbody>
+</table>
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>Redis 的 <code>String</code> 使用的是自己构件的 <code>simple dynamic string(SDS)</code> 抽象类型，基本的结构为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sdshdr &#123;</div><div class="line">    <span class="keyword">int</span> len;    <span class="comment">//字符串长度  “Redis” =&gt; 5</span></div><div class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;   <span class="comment">//buf数组中剩余的字符串长 “Redis” =&gt; 0</span></div><div class="line">    <span class="keyword">char</span> buf[]  <span class="comment">//“Redis” =&gt; ['R','e','d','i','s','\0']</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>SDS为什么这么设计：</p>
+<blockquote>
+<p>不同于C语言的字符串，获取字符串长度操作需要遍历整个字符串，遇到 <code>\0</code> 才能返回字符串长度，SDS创建和修改操作是已经将字符串长度存在 <code>len</code> 中，获取超长字符串时，复杂度仅为O(1)。<br>对于SDS的怎么工作的，详见<a href="http://redisbook.com/preview/sds/different_between_sds_and_c_string.html#id3" target="_blank" rel="external">SDS的分配策略</a></p>
+</blockquote>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><h3 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h3><h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><h2 id="单机数据库"><a href="#单机数据库" class="headerlink" title="单机数据库"></a>单机数据库</h2>
       
     </div>
     <footer class="article-footer">
