@@ -3,21 +3,39 @@
 <head>
   <meta charset="utf-8">
   
-  <title>archives: 2017 | Geoion</title>
+  <title>redis剖析 | Geoion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
+  <meta name="keywords" content="Redis" />
   
   
   
-  <meta name="description" content="404 not found">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Geoion">
-<meta property="og:url" content="http://yoursite.com/archives/2017/index.html">
+  
+  <meta name="description" content="redis 架构
+数据结构 Redis Object目前 Redis 的数据结构有 String, List, Set, Sorted_Set, Hash 五种。
+
+所有的对象都可以用 redisObject 结构来表示，每个对象都有 type, encoding, ptr 这三个属性。
+12345typedef struct redisObject &amp;#123;    unsigned type">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis剖析">
+<meta property="og:url" content="http://yoursite.com/2017/04/02/redis-dissect/index.html">
 <meta property="og:site_name" content="Geoion">
-<meta property="og:description" content="404 not found">
+<meta property="og:description" content="redis 架构
+数据结构 Redis Object目前 Redis 的数据结构有 String, List, Set, Sorted_Set, Hash 五种。
+
+所有的对象都可以用 redisObject 结构来表示，每个对象都有 type, encoding, ptr 这三个属性。
+12345typedef struct redisObject &amp;#123;    unsigned type">
+<meta property="og:image" content="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png">
+<meta property="og:image" content="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%202.png">
+<meta property="og:updated_time" content="2017-04-02T14:49:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Geoion">
-<meta name="twitter:description" content="404 not found">
+<meta name="twitter:title" content="Redis剖析">
+<meta name="twitter:description" content="redis 架构
+数据结构 Redis Object目前 Redis 的数据结构有 String, List, Set, Sorted_Set, Hash 五种。
+
+所有的对象都可以用 redisObject 结构来表示，每个对象都有 type, encoding, ptr 这三个属性。
+12345typedef struct redisObject &amp;#123;    unsigned type">
+<meta name="twitter:image" content="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png">
   
     <link rel="alternate" href="/atom.xml" title="Geoion" type="application/atom+xml">
   
@@ -49,8 +67,6 @@
   
 
   
-    <link rel="stylesheet" href="/css/archive.css" >
-  
 
 </head>
 
@@ -75,7 +91,7 @@
             
               <a class="brand" style="
                  margin-top: 0px;"  
-                 >
+                href="#" data-toggle="modal" data-target="#myModal" >
                   <img width="124px" height="124px" alt="Hike News" src="/css/images/mylogo.jpg">
               </a>
             
@@ -144,137 +160,101 @@
             
       <div id="content" class="outer">
         
-          <section id="main">
-  <div class="archives-tags-wrap"><blockquote><span>There are 2 posts in total till now.</span></blockquote>
+          <section id="main" style="float:none;"><article id="post-redis-dissect" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      Redis剖析
+    </h1>
+  
 
-
-<!-- 分页显示 -->
-
-	
-	
-		
-		
-		  
-		  
-		  <section class="archives-wrap">
-		    <div class="archive-year-wrap">
-		      <h1><a href="/archives/2017" class="archive-year">2017</a></h1>
-		    </div>
-		    <div class="archives">
-		
-		<article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
+      </header>
+    
+    <div class="article-meta">
       
-	<a href="/2017/04/02/redis-dissect/" class="archive-article-date">
+	<a href="/2017/04/02/redis-dissect/" class="article-date">
 	  <time datetime="2017-04-02T14:30:42.000Z" itemprop="datePublished">2017-04-02</time>
 	</a>
 
       
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/04/02/redis-dissect/">Redis剖析</a>
-    </h1>
-  
+    <a class="article-category-link" href="/categories/Database/">Database</a><a class="article-category-link" href="/categories/Database/Cache/">Cache</a>
 
-    </header>
-  </div>
-</article>
-	
-		
-		
-		<article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
+    </div>
+    <div class="article-entry" itemprop="articleBody">
       
-	<a href="/2017/03/13/influxdb-and-influxdb-python/" class="archive-article-date">
-	  <time datetime="2017-03-13T15:21:38.000Z" itemprop="datePublished">2017-03-13</time>
-	</a>
+        <h2 id="redis-架构"><a href="#redis-架构" class="headerlink" title="redis 架构"></a>redis 架构</h2><p><img src="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png" alt="架构"></p>
+<h2 id="数据结构-Redis-Object"><a href="#数据结构-Redis-Object" class="headerlink" title="数据结构 Redis Object"></a>数据结构 Redis Object</h2><p>目前 Redis 的数据结构有 <code>String</code>, <code>List</code>, <code>Set</code>, <code>Sorted_Set</code>, <code>Hash</code> 五种。</p>
+<p><img src="http://onsbus1xi.bkt.clouddn.com/%E5%9B%BE%E7%89%87%202.png" alt="数据结构"></p>
+<p>所有的对象都可以用 redisObject 结构来表示，每个对象都有 <code>type</code>, <code>encoding</code>, <code>ptr</code> 这三个属性。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisObject &#123;</div><div class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;</div><div class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;</div><div class="line">    <span class="keyword">void</span> *ptr;</div><div class="line">&#125; robj;</div></pre></td></tr></table></figure>
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3>
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+	<section id="comments" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'geoiongithub';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
 
       
-  
-    <h1 class="thumb" itemprop="name">
-      <a class="archive-article-title" href="/2017/03/13/influxdb-and-influxdb-python/">InfluxDB入门与influxdb-python</a>
-    </h1>
-  
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
 
-    </header>
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/03/13/influxdb-and-influxdb-python/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">InfluxDB入门与influxdb-python</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-	
-	
-		</div></section>
-	
 
-	<!-- 页数指示器 -->
-	
+<!-- Table of Contents -->
 
-
-
-
+  <aside id="sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis-架构"><span class="toc-number">1.</span> <span class="toc-text">redis 架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据结构-Redis-Object"><span class="toc-number">2.</span> <span class="toc-text">数据结构 Redis Object</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String"><span class="toc-number">2.1.</span> <span class="toc-text">String</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
 </section>
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/Cache/">Cache</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/Python/">Python</a><span class="category-list-count">1</span></li></ul></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/influxdb/">influxdb</a><span class="tag-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/influxdb/" style="font-size: 10px;">influxdb</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a><span class="archive-list-count">1</span></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2017/04/02/redis-dissect/">Redis剖析</a>
-          </li>
-        
-          <li>
-            <a href="/2017/03/13/influxdb-and-influxdb-python/">InfluxDB入门与influxdb-python</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
         
       </div>
       
@@ -365,6 +345,8 @@
 
 
 
+
+  <script src="/js/dialog.js"></script>
 
 
 
