@@ -13,20 +13,23 @@
   
   <meta name="description" content="最近在做数据整理的时候用到了各种时间和日期的生成操作，长期不用 datetime 和 time 模块，难免忘记很多方法的使用细节，所以干脆整理一下可能以后用到的时间生成方法，用到不要到处找。
 使用的 Python 版本: 2.7.13 / 3.6.1
-日期(Date)时间(Time)">
+起步基本上所有的日期和时间的操作都是基于 datetime 和 time 模块，为Python标准库，无需安装。
+Python datetime 模">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python 中的日期和时间">
 <meta property="og:url" content="http://yoursite.com/2017/06/24/python-date-and-time/index.html">
 <meta property="og:site_name" content="Geoion">
 <meta property="og:description" content="最近在做数据整理的时候用到了各种时间和日期的生成操作，长期不用 datetime 和 time 模块，难免忘记很多方法的使用细节，所以干脆整理一下可能以后用到的时间生成方法，用到不要到处找。
 使用的 Python 版本: 2.7.13 / 3.6.1
-日期(Date)时间(Time)">
-<meta property="og:updated_time" content="2017-06-23T19:19:21.000Z">
+起步基本上所有的日期和时间的操作都是基于 datetime 和 time 模块，为Python标准库，无需安装。
+Python datetime 模">
+<meta property="og:updated_time" content="2017-06-24T21:17:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python 中的日期和时间">
 <meta name="twitter:description" content="最近在做数据整理的时候用到了各种时间和日期的生成操作，长期不用 datetime 和 time 模块，难免忘记很多方法的使用细节，所以干脆整理一下可能以后用到的时间生成方法，用到不要到处找。
 使用的 Python 版本: 2.7.13 / 3.6.1
-日期(Date)时间(Time)">
+起步基本上所有的日期和时间的操作都是基于 datetime 和 time 模块，为Python标准库，无需安装。
+Python datetime 模">
   
     <link rel="alternate" href="/atom.xml" title="Geoion" type="application/atom+xml">
   
@@ -179,7 +182,141 @@
       
         <p>最近在做数据整理的时候用到了各种时间和日期的生成操作，长期不用 <code>datetime</code> 和 <code>time</code> 模块，难免忘记很多方法的使用细节，所以干脆整理一下可能以后用到的时间生成方法，用到不要到处找。</p>
 <p>使用的 <code>Python</code> 版本: 2.7.13 / 3.6.1</p>
-<h2 id="日期-Date"><a href="#日期-Date" class="headerlink" title="日期(Date)"></a>日期(Date)</h2><h2 id="时间-Time"><a href="#时间-Time" class="headerlink" title="时间(Time)"></a>时间(Time)</h2>
+<h2 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h2><p>基本上所有的日期和时间的操作都是基于 <code>datetime</code> 和 <code>time</code> 模块，为Python标准库，无需安装。</p>
+<p>Python datetime 模块：<a href="https://docs.python.org/2/library/datetime.html#module-datetime" target="_blank" rel="external">2.x</a> / <a href="https://docs.python.org/3/library/datetime.html#time-objects" target="_blank" rel="external">3.x</a><br>Python time 模块：<a href="https://docs.python.org/2/library/time.html?highlight=time#module-time" target="_blank" rel="external">2.x</a> / <a href="https://docs.python.org/3/library/time.html?highlight=time#module-time" target="_blank" rel="external">3.x</a><br><a id="more"></a></p>
+<blockquote>
+<p>关于这两个模块：</p>
+<ol>
+<li><code>time</code> 模块大量调用了系统的 <code>C library</code> 函数(Most of the functions defined in this module call platform C library functions with the same name.)，在文档中被归为 <code>Generic Operating System Services</code>(而 <code>datetime</code> 在 <code>The Python Standard Library</code>)，<code>time</code> 提供的是基于 <code>Unix Timestamp</code> 的操作，更接近于系统层面，而 <code>datetime</code> 比 <code>time</code> 封装了更实用的方法。</li>
+<li>如果操作的时间范围超过 <code>1970 - 2038</code> ，还是换 <code>datetime</code> 模块吧。</li>
+</ol>
+</blockquote>
+<h2 id="日期的格式化"><a href="#日期的格式化" class="headerlink" title="日期的格式化"></a>日期的格式化</h2><p>日常使用比较多的两种转换，是将时间对象转成字符串，另一种是将字符串转为时间对象：</p>
+<ol>
+<li>使用 <code>datetime</code> 模块：<ul>
+<li>时间对象转成字符串: <code>datetime.datetime.strftime()</code></li>
+<li>字符串转成时间 <code>datetime</code> 类: <code>datetime.datetime.strptime()</code></li>
+</ul>
+</li>
+<li>使用 <code>time</code> 模块：<ul>
+<li>时间对象转成字符串: <code>time.strftime()</code></li>
+<li>字符串转成 <code>struct_time</code> tuple: <code>time.strptime()</code></li>
+</ul>
+</li>
+</ol>
+<p>日期格式化符号代表的意义：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">格式</th>
+<th style="text-align:center">说明</th>
+<th style="text-align:center">取值范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">%a</td>
+<td style="text-align:center">缩写的星期名称</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%A</td>
+<td style="text-align:center">完整的星期名称</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%b</td>
+<td style="text-align:center">缩写的月份名称</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%B</td>
+<td style="text-align:center">完整的月份名称</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%c</td>
+<td style="text-align:center">本地化的日期和时间表示</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%d</td>
+<td style="text-align:center">本日在当月中的第几天</td>
+<td style="text-align:center">01 - 31</td>
+</tr>
+<tr>
+<td style="text-align:center">%H</td>
+<td style="text-align:center">小时(24小时制)</td>
+<td style="text-align:center">00 - 23</td>
+</tr>
+<tr>
+<td style="text-align:center">%l</td>
+<td style="text-align:center">小时(12小时制)</td>
+<td style="text-align:center">01 - 12</td>
+</tr>
+<tr>
+<td style="text-align:center">%j</td>
+<td style="text-align:center">本日在当年中第几天</td>
+<td style="text-align:center">001 - 366</td>
+</tr>
+<tr>
+<td style="text-align:center">%m</td>
+<td style="text-align:center">本月在当年中第几个月</td>
+<td style="text-align:center">01 - 12</td>
+</tr>
+<tr>
+<td style="text-align:center">%M</td>
+<td style="text-align:center">分钟</td>
+<td style="text-align:center">00 - 59</td>
+</tr>
+<tr>
+<td style="text-align:center">%p</td>
+<td style="text-align:center">12小时制中A.M/P.M</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%S</td>
+<td style="text-align:center">秒钟</td>
+<td style="text-align:center">00 - 59</td>
+</tr>
+<tr>
+<td style="text-align:center">%U</td>
+<td style="text-align:center">本周在一年中的星期数(星期日为一周开始)</td>
+<td style="text-align:center">0 - 53</td>
+</tr>
+<tr>
+<td style="text-align:center">%w</td>
+<td style="text-align:center">本日在一周的第几天(星期日为一周开始)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">%W</td>
+<td style="text-align:center">本周在一年中的星期数(星期一为一周开始)</td>
+<td style="text-align:center">0 - 53</td>
+</tr>
+<tr>
+<td style="text-align:center">%y</td>
+<td style="text-align:center">两位数的年份表示</td>
+<td style="text-align:center">00 - 99</td>
+</tr>
+<tr>
+<td style="text-align:center">%Y</td>
+<td style="text-align:center">四位数的年份表示</td>
+<td style="text-align:center">0000 - 9999</td>
+</tr>
+</tbody>
+</table>
+<h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h3 id="获取-今天的日期-和-现在的时间"><a href="#获取-今天的日期-和-现在的时间" class="headerlink" title="获取 今天的日期 和 现在的时间"></a>获取 今天的日期 和 现在的时间</h3><ol>
+<li><p>使用 <code>datetime</code> 模块：</p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> datetime</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.date.today()</div><div class="line">datetime.date(<span class="number">2017</span>, <span class="number">6</span>, <span class="number">25</span>) </div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.date.today().strftime(<span class="string">'%Y-%m-%d'</span>) <span class="comment"># 用 strftime()方法将时间转化为日期字符串</span></div><div class="line"><span class="string">'2017-06-25'</span> <span class="comment"># 输出为 str 类型</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.datetime.now() <span class="comment"># today 和 now 方法都是当前时区的时间，UTC时间请使用 utcnow() 方法</span></div><div class="line">datetime.datetime(<span class="number">2017</span>, <span class="number">6</span>, <span class="number">25</span>, <span class="number">4</span>, <span class="number">35</span>, <span class="number">59</span>, <span class="number">947495</span>)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.datetime.now().strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>) <span class="comment"># 格式化输出当前时间</span></div><div class="line"><span class="string">'2017-06-25 04:40:10'</span><span class="comment"># 输出为 str 类型</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>使用 <code>time</code> 模块：</p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.localtime() <span class="comment"># localtime输出为本地时间，UTC 时间请使用 gmtime()方法</span></div><div class="line">time.struct_time(tm_year=<span class="number">2017</span>, tm_mon=<span class="number">6</span>, tm_mday=<span class="number">25</span>, tm_hour=<span class="number">4</span>, tm_min=<span class="number">15</span>, tm_sec=<span class="number">9</span>, tm_wday=<span class="number">6</span>, tm_yday=<span class="number">176</span>, tm_isdst=<span class="number">0</span>)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strftime(<span class="string">"%Y-%m-%d"</span>, time.localtime()) </div><div class="line"><span class="string">'2017-06-25'</span> <span class="comment"># 输出为 str 类型</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strftime(<span class="string">"%Y-%m-%d %H:%M:%S"</span>, time.localtime())</div><div class="line"><span class="string">'2017-06-25 04:41:19'</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><code>datetime</code> 和 <code>time</code> 模块都有各自的方法来获取当前的时间，</p>
+<h3 id="获取已知间隔的时间"><a href="#获取已知间隔的时间" class="headerlink" title="获取已知间隔的时间"></a>获取已知间隔的时间</h3><p>计算以现在为起点，明确的时间间隔的时间点，在 <code>datetime</code> 中提供了 <code>timedelta</code> 对象来计算。</p>
+
       
     </div>
     <footer class="article-footer">
@@ -238,7 +375,7 @@
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#日期-Date"><span class="toc-number">1.</span> <span class="toc-text">日期(Date)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间-Time"><span class="toc-number">2.</span> <span class="toc-text">时间(Time)</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起步"><span class="toc-number">1.</span> <span class="toc-text">起步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日期的格式化"><span class="toc-number">2.</span> <span class="toc-text">日期的格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用方法"><span class="toc-number">3.</span> <span class="toc-text">常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获取-今天的日期-和-现在的时间"><span class="toc-number">3.1.</span> <span class="toc-text">获取 今天的日期 和 现在的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取已知间隔的时间"><span class="toc-number">3.2.</span> <span class="toc-text">获取已知间隔的时间</span></a></li></ol></li></ol>
     
     </div>
   </aside>
