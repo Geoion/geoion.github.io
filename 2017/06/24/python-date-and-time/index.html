@@ -23,7 +23,7 @@ Python datetime 模">
 使用的 Python 版本: 2.7.13 / 3.6.1
 起步基本上所有的日期和时间的操作都是基于 datetime 和 time 模块，为Python标准库，无需安装。
 Python datetime 模">
-<meta property="og:updated_time" content="2017-07-11T02:21:07.000Z">
+<meta property="og:updated_time" content="2017-08-01T10:55:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python 中的日期和时间">
 <meta name="twitter:description" content="最近在做数据整理的时候用到了各种时间和日期的生成操作，长期不用 datetime 和 time 模块，难免忘记很多方法的使用细节，所以干脆整理一下可能以后用到的时间生成方法，用到不要到处找。
@@ -287,7 +287,7 @@ Python datetime 模">
 <tr>
 <td style="text-align:center">%w</td>
 <td style="text-align:center">本日在一周的第几天(星期日为一周开始)</td>
-<td style="text-align:center"></td>
+<td style="text-align:center">0 - 6</td>
 </tr>
 <tr>
 <td style="text-align:center">%W</td>
@@ -320,7 +320,12 @@ Python datetime 模">
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.datetime.today().strftime(<span class="string">"%Y-%m-%d"</span>)</div><div class="line"><span class="string">'2017-06-25'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>(datetime.datetime.today() - datetime.timedelta(days=<span class="number">1</span>)).strftime(<span class="string">"%Y-%m-%d"</span>)</div><div class="line"><span class="string">'2017-06-24'</span></div></pre></td></tr></table></figure>
 <p>获取一周前的日期：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>(datetime.datetime.today() - datetime.timedelta(weeks=<span class="number">1</span>)).strftime(<span class="string">"%Y-%m-%d"</span>)</div><div class="line"><span class="string">'2017-06-18'</span></div></pre></td></tr></table></figure>
-<p><code>datetime</code> 中 <code>timedelta</code> 支持的时间单位有：<code>days</code>、<code>seconds</code>、<code>microseconds</code>、<code>milliseconds</code>、<code>minutes</code>、<code>hours</code>、<code>weeks</code>。ß</p>
+<p><code>datetime</code> 中 <code>timedelta</code> 支持的时间单位有：<code>days</code>、<code>seconds</code>、<code>microseconds</code>、<code>milliseconds</code>、<code>minutes</code>、<code>hours</code>、<code>weeks</code>。</p>
+<h3 id="获取时间点"><a href="#获取时间点" class="headerlink" title="获取时间点"></a>获取时间点</h3><p>获取本周在今年是第几周：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> datetime</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>datetime.datetime.today().strftime(<span class="string">"%U"</span>)</div><div class="line"><span class="string">'31'</span> <span class="comment"># 输出为str类型，注意转换</span></div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> time</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strftime(<span class="string">"%U"</span>,time.localtime())</div><div class="line"><span class="string">'31'</span> <span class="comment"># 输出为str类型，注意转换</span></div></pre></td></tr></table></figure>
+<p>已知今年第几周，求这一周的起始和结束：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> time</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strptime(<span class="string">'2017-31-0'</span>, <span class="string">'%Y-%U-%w'</span>) <span class="comment"># 一周的开始是周日</span></div><div class="line">time.struct_time(tm_year=<span class="number">2017</span>, tm_mon=<span class="number">7</span>, tm_mday=<span class="number">30</span>, tm_hour=<span class="number">0</span>, tm_min=<span class="number">0</span>, tm_sec=<span class="number">0</span>, tm_wday=<span class="number">6</span>, tm_yday=<span class="number">211</span>, tm_isdst=<span class="number">-1</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strftime(<span class="string">"%Y-%m-%d"</span>, time.strptime(<span class="string">'2017-31-0'</span>, <span class="string">'%Y-%U-%w'</span>))</div><div class="line"><span class="string">'2017-07-30'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strptime(<span class="string">'2017-31-6'</span>, <span class="string">'%Y-%U-%w'</span>) 一周的结束是周六</div><div class="line">time.struct_time(tm_year=<span class="number">2017</span>, tm_mon=<span class="number">8</span>, tm_mday=<span class="number">5</span>, tm_hour=<span class="number">0</span>, tm_min=<span class="number">0</span>, tm_sec=<span class="number">0</span>, tm_wday=<span class="number">5</span>, tm_yday=<span class="number">217</span>, tm_isdst=<span class="number">-1</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>time.strftime(<span class="string">"%Y-%m-%d"</span>, time.strptime(<span class="string">'2017-31-6'</span>, <span class="string">'%Y-%U-%w'</span>))</div><div class="line"><span class="string">'2017-08-05'</span></div></pre></td></tr></table></figure>
 
       
     </div>
@@ -380,7 +385,7 @@ Python datetime 模">
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起步"><span class="toc-number">1.</span> <span class="toc-text">起步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日期的格式化"><span class="toc-number">2.</span> <span class="toc-text">日期的格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用方法"><span class="toc-number">3.</span> <span class="toc-text">常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获取-今天的日期-和-现在的时间"><span class="toc-number">3.1.</span> <span class="toc-text">获取 今天的日期 和 现在的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取已知间隔的时间"><span class="toc-number">3.2.</span> <span class="toc-text">获取已知间隔的时间</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起步"><span class="toc-number">1.</span> <span class="toc-text">起步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日期的格式化"><span class="toc-number">2.</span> <span class="toc-text">日期的格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用方法"><span class="toc-number">3.</span> <span class="toc-text">常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获取-今天的日期-和-现在的时间"><span class="toc-number">3.1.</span> <span class="toc-text">获取 今天的日期 和 现在的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取已知间隔的时间"><span class="toc-number">3.2.</span> <span class="toc-text">获取已知间隔的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取时间点"><span class="toc-number">3.3.</span> <span class="toc-text">获取时间点</span></a></li></ol></li></ol>
     
     </div>
   </aside>
